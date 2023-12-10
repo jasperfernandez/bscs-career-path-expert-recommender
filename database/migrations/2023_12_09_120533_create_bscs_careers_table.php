@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bscs_careers', function (Blueprint $table) {
             $table->id();
             $table->string('bscs_career_name');
-            $table->string('difficulty');
+            $table->enum('difficulty', ['easy', 'medium', 'hard']);
             $table->timestamps();
         });
     }
