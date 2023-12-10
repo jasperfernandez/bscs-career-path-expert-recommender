@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('bscs_career_extra_curricular_activity_interest', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('preferred_career_id');
-            $table->unsignedBigInteger('academic_performance_id');
+            $table->unsignedBigInteger('bscs_career_id');
+            $table->unsignedBigInteger('extra_curricular_activity_id');
+            $table->unsignedBigInteger('interest_id');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('bscs_career_extra_curricular_activity_interest');
     }
 };

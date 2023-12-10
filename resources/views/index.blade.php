@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="/img/jflogo.png">
     <title>Home</title>
     {{--  Bootstrap --}}
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -34,21 +35,6 @@
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
                                     placeholder="Enter your full name">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="age" class="form-label">Age</label>
-                                <input type="text" class="form-control" id="age" name="age"
-                                    placeholder="Enter your age">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="gender" class="form-label">Gender</label>
-                                <select class="gender form-control" name="gender[]" id="gender" multiple="multiple">
-                                    <option value="">Select</option>
-                                    <option value="F">Female</option>
-                                    <option value="M">Male</option>
-                                </select>
                             </div>
 
                             <div class="form-group">
@@ -98,19 +84,19 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">Start</button>
+                            <button type="submit" class="btn btn-primary w-100 mb-2">Start</button>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card mb-4" style="height: 731.8px;">
+                <div class="card mb-4" style="height: 564.6px;">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Recommendations</h6>
                     </div>
                     <div class="card-body">
                         <p>Preferred Career: <span><b>Backend Developer</b></span></p>
-                        <p>Recommended Career: <span><b>Full Stack Developer</b></span></p><br><br>
+                        <p>Recommended Career: <span><b>Full Stack Developer</b></span></p>
                         <!-- Radar Chart -->
                         <canvas id="radarChart" style="max-height: 400px;"></canvas>
                         <script>
@@ -119,13 +105,13 @@
                                     type: 'radar',
                                     data: {
                                         labels: [
-                                            'Technical',
-                                            'Logical',
-                                            'Mathematical',
+                                            'Programming',
+                                            'Problem Solving',
+                                            'Creativity',
                                             'Design',
-                                            'Business',
-                                            'General',
-                                            'Communication'
+                                            'Business Acumen',
+                                            'General Knowledge',
+                                            'Communication Skills'
                                         ],
                                         datasets: [{
                                             label: 'Jasper Fernandez',
@@ -194,13 +180,6 @@
                     text: 'wontfix'
                 }
             ];
-
-            $('.gender').select2({
-                placeholder: "Select a Gender",
-                maximumSelectionLength: 1,
-                // data: data,
-                // allowClear: true
-            });
 
             $('.interests').select2({
                 placeholder: "Select a Interests",
