@@ -24,7 +24,6 @@ class Student extends Model
         return $this->belongsTo(
             AcademicPerformance::class,
             'academic_performance_id',
-            'id'
         );
     }
 
@@ -33,30 +32,26 @@ class Student extends Model
         return $this->belongsTo(
             BscsCareer::class,
             'preferred_career_id',
-            'id'
         );
     }
 
-    // start extra_curricular_activity_interest_student table relationship
     public function extraCurricularActivities(): BelongsToMany
     {
         return $this->belongsToMany(
             ExtraCurricularActivity::class,
-            'extra_curricular_activity_interest_student',
+            'extra_curricular_activity_student',
             'student_id',
             'extra_curricular_activity_id'
-        )->withPivot('interest_id');
+        );
     }
 
     public function interests(): BelongsToMany
     {
         return $this->belongsToMany(
             Interest::class,
-            'extra_curricular_activity_interest_student',
+            'interest_student',
             'student_id',
             'interest_id'
-        )->withPivot('extra_curricular_activity_id');
+        );
     }
-
-    // end of extra_curricular_activity_interest_student table relationship
 }

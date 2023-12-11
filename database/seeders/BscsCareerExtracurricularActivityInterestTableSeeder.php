@@ -15,8 +15,7 @@ class BscsCareerExtracurricularActivityInterestTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $bscsCareers = BscsCareer::all();
-        $interests = Interest::all();
-        $extraCurricularActivities = ExtraCurricularActivity::all();
+        $bscsCareer = BscsCareer::find(1);
+        $bscsCareer->extraCurricularActivities()->attach(1, ['interest_id' => 1]);
     }
 }

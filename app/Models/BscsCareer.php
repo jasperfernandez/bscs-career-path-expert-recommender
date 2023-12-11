@@ -19,7 +19,6 @@ class BscsCareer extends Model
         'difficulty',
     ];
 
-    // students table relationship
     public function students(): HasMany
     {
         return $this->hasMany(
@@ -28,17 +27,15 @@ class BscsCareer extends Model
             'id', // local key of the current model
         );
     }
-    // end of students table relationship
 
-    // bscs_career_extra_curricular_activity_interest table relationship
     public function extraCurricularActivities(): BelongsToMany
     {
         return $this->belongsToMany(
             ExtraCurricularActivity::class, // related model
-            'bscs_career_extra_curricular_activity_interest', // pivot table name
+            'bscs_career_extra_curricular_activity', // pivot table name
             'bscs_career_id', // foreign key of the current model
             'extra_curricular_activity_id', // foreign key of the related model
-        )->withPivot('interest_id'); // pivot table third foreign key column name
+        );
     }
 
     public function interests(): BelongsToMany
@@ -48,7 +45,6 @@ class BscsCareer extends Model
             'bscs_career_extra_curricular_activity_interest',  // pivot table name
             'bscs_career_id', // foreign key of the current model
             'interest_id', // foreign key of the related model
-        )->withPivot('extra_curricular_activity_id'); // pivot table third foreign key column name
+        );
     }
-    // end of bscs_career_extra_curricular_activity_interest table relationship
 }
