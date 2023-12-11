@@ -11,7 +11,9 @@ class SetupController extends Controller
 {
     public function index()
     {
-        $bscsCareers = BscsCareer::with('extraCurricularActivities', 'interests')->get();
+        $bscsCareers = BscsCareer::all();
+        $bscsCareersWithRelatedData = BscsCareer::with('extraCurricularActivities', 'interests')->get();
+        // dd($bscsCareersWithRelatedData);
         $extraCurricularActivities = ExtraCurricularActivity::all();
         $interests = Interest::all();
 
@@ -21,28 +23,9 @@ class SetupController extends Controller
             'bscsCareers',
             'extraCurricularActivities',
             'interests',
+            'bscsCareersWithRelatedData',
         ));
     }
-    // public function index()
-    // {
-    //     $bscsCareers = BscsCareer::all();
-    //     $extraCurricularActivities = ExtraCurricularActivity::all();
-    //     $interests = Interest::all();
-
-    //     // $careerExtraCurricularActivities = BscsCareer::with('extraCurricularActivities')->get();
-    //     // Load the pivot table data along with the relationships
-    //     foreach ($bscsCareers as $bscsCareer) {
-    //         $bscsCareer->load(['extraCurricularActivities', 'interests']);
-    //     }
-    //     // TODO: Add the code to get the PIVOT table data from the database
-
-    //     return view('setup', compact(
-    //         'bscsCareers',
-    //         'extraCurricularActivities',
-    //         'interests',
-    //         // 'careerExtraCurricularActivities',
-    //     ));
-    // }
 
     public function handleAttach(Request $request)
     {
@@ -62,9 +45,18 @@ class SetupController extends Controller
         // Find the BSCS career by its ID
         $bscsCareer = BscsCareer::find($careerId);
 
-        // Attaching the data to pivot table
-        $bscsCareer->extraCurricularActivities()->sync($extracurricularActivityIds, ['interest_id' => $interestIds]);
+        // Attaching the data to pivot tables
+        // $bscsCareer->extraCurricularActivities()
+        //     ->syncWithoutDetaching($extracurricularActivityIds);
+        // $bscsCareer->interests()
+        //     ->syncWithoutDetaching($interestIds);
+        $bscsCareer->extraCurricularActivities()
+            ->sync($extracurricularActivityIds);
+        $bscsCareer->interests()
+            ->sync($interestIds);
 
-        return redirect()->route('setup')->with('success', 'Attachments saved successfully.');;
+        return redirect()
+            ->route('setup')
+            ->with('success', 'Attachments saved successfully.');
     }
 }

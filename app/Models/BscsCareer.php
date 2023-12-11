@@ -42,7 +42,7 @@ class BscsCareer extends Model
     {
         return $this->belongsToMany(
             Interest::class,  // related model
-            'bscs_career_extra_curricular_activity_interest',  // pivot table name
+            'bscs_career_interest',  // pivot table name
             'bscs_career_id', // foreign key of the current model
             'interest_id', // foreign key of the related model
         );

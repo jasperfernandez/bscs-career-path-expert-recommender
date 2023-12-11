@@ -19,10 +19,10 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="h1 text-center pt-4"><b>BSCS CAREER PATH EXPERT RECOMMENDER SYSTEM</b> </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">User Form</h6>
@@ -38,15 +38,15 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="academicPerformance" class="form-label">Academic Performance</label>
-                                <select class="academicPerformance form-control" name="ap[]" id="academicPerformance"
-                                    multiple="multiple">
+                                <label for="academic-performance" class="form-label">Academic Performance</label>
+                                <select class="academic-performance form-control" name="academic-performance"
+                                    id="academic-performance">
                                     <option value="">Select</option>
-                                    <option value="0">Outstanding</option>
-                                    <option value="1">Excellent</option>
-                                    <option value="2">Very Good</option>
-                                    <option value="3">Good</option>
-                                    <option value="4">Passed</option>
+                                    @foreach ($academicPerformances as $performance)
+                                        <option value="{{ $performance->id }}">
+                                            {{ $performance->academic_performance_name }}</option>
+                                    @endforeach
+
                                 </select>
                             </div>
 
@@ -55,32 +55,34 @@
                                 <select class="interests form-control" name="interest[]" multiple="multiple"
                                     id="interests">
                                     <option value="">Select</option>
-                                    <option value="0">Programming</option>
-                                    <option value="1">Graphic Design</option>
+                                    @foreach ($interests as $interest)
+                                        <option value="{{ $interest->id }}">{{ $interest->interest_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="preferredCareer" class="form-label">Preferred Career</label>
-                                <select class="preferredCareer form-control" name="pc[]" id="preferredCareer"
-                                    multiple="multiple">
+                                <label for="preferred-career" class="form-label">Preferred Career</label>
+                                <select class="preferred-career form-control" name="preferred-career"
+                                    id="preferred-career">
                                     <option value="">Select</option>
-                                    <option value="0">Game Developer</option>
-                                    <option value="1">Web Developer</option>
-                                    <option value="2">Full Stack Developer</option>
+                                    @foreach ($bscsCareers as $career)
+                                        <option value="{{ $career->id }}">{{ $career->bscs_career_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="extraCurricularActivities" class="form-label">Extra Curricular
+                                <label for="extra-curricular-activities" class="form-label">Extra Curricular
                                     Activites</label>
-                                <select class="extraCurricularActivities form-control" name="eca[]"
-                                    multiple="multiple" id="extraCurricularActivities">
+                                <select class="extra-curricular-activities form-control"
+                                    name="extra-curricular-activities[]" multiple="multiple"
+                                    id="extra-curricular-activities">
                                     <option value="">Select</option>
-                                    <option value="0">Hackathon</option>
-                                    <option value="1">Pitching</option>
-                                    <option value="2">IT Lympics</option>
-                                    <option value="3">Technofair</option>
+                                    @foreach ($extraCurricularActivities as $activity)
+                                        <option value="{{ $activity->id }}">
+                                            {{ $activity->extra_curricular_activity_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -89,12 +91,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4" style="height: 564.6px;">
+            <div class="col-md-8">
+                <div class="card mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Recommendations</h6>
                     </div>
                     <div class="card-body">
+                        <p>Student Name: <span><b>Jasper Fernandez</b></span></p>
                         <p>Preferred Career: <span><b>Backend Developer</b></span></p>
                         <p>Recommended Career: <span><b>Full Stack Developer</b></span></p>
                         <!-- Radar Chart -->
@@ -185,17 +188,15 @@
                 placeholder: "Select a Interests",
             });
 
-            $('.preferredCareer').select2({
+            $('.preferred-career').select2({
                 placeholder: "Select a Preferred Career",
-                maximumSelectionLength: 1,
             });
 
-            $('.academicPerformance').select2({
+            $('.academic-performance').select2({
                 placeholder: "Select a Academic Performance",
-                maximumSelectionLength: 1,
             });
 
-            $('.extraCurricularActivities').select2({
+            $('.extra-curricular-activities').select2({
                 placeholder: "Select a Extra Curricular Activities",
             });
         });

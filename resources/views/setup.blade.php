@@ -21,8 +21,8 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="h1 text-center pt-4"><b>BSCS CAREER PATH EXPERT RECOMMENDER SYSTEM</b> </div>
+    <div class="container-fluid">
+        <div class="h1 text-center pt-4"><b>BSCS CAREER PATH ADMIN DASHBOARD</b> </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="card mb-4">
@@ -30,6 +30,11 @@
                         <h6 class="m-0 font-weight-bold text-primary">BSCS Career Attachment Form</h6>
                     </div>
                     <div class="card-body">
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         <form method="POST" action="{{ route('career-attach') }}">
                             @csrf
                             @method('POST')
@@ -89,19 +94,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($bscsCareers as $career)
+                                @foreach ($bscsCareersWithRelatedData as $career)
                                     <tr>
                                         <td>{{ $career->id }}</td>
                                         <td>{{ $career->bscs_career_name }}</td>
                                         <td>
-                                            @foreach ($career->extraCurricularActivities as $activity)
-                                                {{ $activity->extra_curricular_activity_name }}
-                                            @endforeach
+                                            @if ($career->extraCurricularActivities->isNotEmpty())
+                                                @foreach ($career->extraCurricularActivities as $activity)
+                                                    {{ $activity->extra_curricular_activity_name }},
+                                                @endforeach
+                                            @else
+                                                No activities
+                                            @endif
                                         </td>
                                         <td>
-                                            @foreach ($career->interests as $interest)
-                                                {{ $interest->interest_name }}
-                                            @endforeach
+                                            @if ($career->interests->isNotEmpty())
+                                                @foreach ($career->interests as $interest)
+                                                    {{ $interest->interest_name }},
+                                                @endforeach
+                                            @else
+                                                No interests
+                                            @endif
                                         </td>
                                         <td>{{ $career->difficulty }}</td>
 
