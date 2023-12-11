@@ -28,9 +28,19 @@
                         <h6 class="m-0 font-weight-bold text-primary">User Form</h6>
                     </div>
                     <div class="card-body">
-
-
-                        <form>
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <form method="POST" action="{{ route('student-recommend') }}">
+                            @csrf
+                            @method('POST')
                             <div class="form-group">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
@@ -51,8 +61,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="interests" class="form-label">Interest</label>
-                                <select class="interests form-control" name="interest[]" multiple="multiple"
+                                <label for="interests" class="form-label">Interests</label>
+                                <select class="interests form-control" name="interests[]" multiple="multiple"
                                     id="interests">
                                     <option value="">Select</option>
                                     @foreach ($interests as $interest)

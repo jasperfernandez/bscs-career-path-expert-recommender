@@ -22,6 +22,6 @@ Route::get('/', function () {
     return redirect('/home');
 });
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::post('/home', [SetupController::class, 'handleRecommend'])->name('student-recommend');
+Route::post('/home', [HomeController::class, 'handleRecommend'])->name('student-recommend');
 Route::get('/setup', [SetupController::class, 'index'])->name('setup');
 Route::post('/setup', [SetupController::class, 'handleAttach'])->name('career-attach');
