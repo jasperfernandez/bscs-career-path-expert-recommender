@@ -36,4 +36,14 @@ class ExtraCurricularActivity extends Model
             'bscs_career_id'
         );
     }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Skill::class,
+            'extra_curricular_activity_skill',
+            'extra_curricular_activity_id',
+            'skill_id'
+        );
+    }
 }

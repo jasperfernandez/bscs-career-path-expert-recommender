@@ -47,4 +47,14 @@ class BscsCareer extends Model
             'interest_id', // foreign key of the related model
         );
     }
+
+    public function studentWithBscsScores(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Student::class,
+            'bscs_career_student',
+            'bscs_career_id',
+            'student_id'
+        )->withPivot('score');
+    }
 }

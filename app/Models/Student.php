@@ -65,4 +65,14 @@ class Student extends Model
             'skill_id'
         );
     }
+
+    public function bscsCareers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            BscsCareer::class,
+            'bscs_career_student',
+            'student_id',
+            'bscs_career_id'
+        )->withPivot('score');
+    }
 }

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('skill_student', function (Blueprint $table) {
+        Schema::create('extra_curricular_activity_skill', function (Blueprint $table) {
+            $table->unsignedBigInteger('extra_curricular_activity_id');
             $table->unsignedBigInteger('skill_id');
-            $table->unsignedBigInteger('student_id');
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('skill_student');
+        Schema::dropIfExists('extra_curricular_activity_skill');
     }
 };

@@ -21,4 +21,14 @@ class Skill extends Model
             'student_id'
         );
     }
+
+    public function extraCurricularActivities(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ExtraCurricularActivity::class,
+            'extra_curricular_activity_skill',
+            'skill_id',
+            'extra_curricular_activity_id'
+        );
+    }
 }

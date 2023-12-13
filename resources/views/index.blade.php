@@ -22,11 +22,8 @@
     <div class="container-fluid">
         <div class="h1 text-center pt-4"><b>BSCS CAREER PATH EXPERT RECOMMENDER SYSTEM</b> </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-8 mx-auto d-flex flex-column">
                 <div class="card mb-4">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">User Form</h6>
-                    </div>
                     <div class="card-body">
                         @if (session('success'))
                             <div class="alert alert-success">
@@ -38,7 +35,7 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                        <form method="POST" action="{{ route('student-recommend') }}">
+                        <form method="POST" action="{{ route('create-student') }}">
                             @csrf
                             @method('POST')
                             <div class="form-group">
@@ -101,55 +98,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Recommendations</h6>
-                    </div>
-                    <div class="card-body">
-                        <p>Student Name: <span><b>Jasper Fernandez</b></span></p>
-                        <p>Preferred Career: <span><b>Backend Developer</b></span></p>
-                        <p>Recommended Career: <span><b>Full Stack Developer</b></span></p>
-                        <!-- Radar Chart -->
-                        <canvas id="radarChart" style="max-height: 400px;"></canvas>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", () => {
-                                new Chart(document.querySelector('#radarChart'), {
-                                    type: 'radar',
-                                    data: {
-                                        labels: [
-                                            'Programming',
-                                            'Problem Solving',
-                                            'Creativity',
-                                            'Design',
-                                            'Communication Skills'
-                                        ],
-                                        datasets: [{
-                                            label: 'Jasper Fernandez',
-                                            data: [96, 88, 81, 89, 96],
-                                            fill: true,
-                                            backgroundColor: 'rgba(103, 119, 239, 0.2)',
-                                            borderColor: 'rgb(103, 119, 239)',
-                                            pointBackgroundColor: 'rgb(103, 119, 239)',
-                                            pointBorderColor: '#fff',
-                                            pointHoverBackgroundColor: '#fff',
-                                            pointHoverBorderColor: 'rgb(103, 119, 239)'
-                                        }]
-                                    },
-                                    options: {
-                                        elements: {
-                                            line: {
-                                                borderWidth: 2
-                                            }
-                                        }
-                                    }
-                                });
-                            });
-                        </script>
-                        <!-- End Radar CHart -->
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -169,29 +117,6 @@
 
     <script>
         $(document).ready(function() {
-
-            var interests = [{
-                    id: 0,
-                    text: 'enhancement'
-                },
-                {
-                    id: 1,
-                    text: 'bug'
-                },
-                {
-                    id: 2,
-                    text: 'duplicate'
-                },
-                {
-                    id: 3,
-                    text: 'invalid'
-                },
-                {
-                    id: 4,
-                    text: 'wontfix'
-                }
-            ];
-
             $('.interests').select2({
                 placeholder: "Select a Interests",
             });

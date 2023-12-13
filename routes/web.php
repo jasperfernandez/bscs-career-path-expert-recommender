@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\CareerSetupController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\RecommendationsController;
 
 /*
@@ -22,6 +23,7 @@ Route::get('/', function () {
     return redirect('/home');
 });
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::post('/home', [HomeController::class, 'handleRecommend'])->name('student-recommend');
+Route::post('/home', [HomeController::class, 'createStudent'])->name('create-student');
+Route::get('/recommendation/{studentId}', [RecommendationController::class, 'index'])->name('recommendation');
 Route::get('/setup', [SetupController::class, 'index'])->name('setup');
 Route::post('/setup', [SetupController::class, 'handleAttach'])->name('career-attach');

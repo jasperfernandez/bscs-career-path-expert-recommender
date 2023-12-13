@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('skill_student', function (Blueprint $table) {
-            $table->unsignedBigInteger('skill_id');
-            $table->unsignedBigInteger('student_id');
+        Schema::table('skill_student', function (Blueprint $table) {
+            $table->integer('points');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('skill_student');
+        Schema::table('skill_student', function (Blueprint $table) {
+            //
+        });
     }
 };
