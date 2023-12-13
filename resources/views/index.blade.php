@@ -122,13 +122,11 @@
                                             'Problem Solving',
                                             'Creativity',
                                             'Design',
-                                            'Business Acumen',
-                                            'General Knowledge',
                                             'Communication Skills'
                                         ],
                                         datasets: [{
                                             label: 'Jasper Fernandez',
-                                            data: [96, 88, 81, 89, 96, 37, 89],
+                                            data: [96, 88, 81, 89, 96],
                                             fill: true,
                                             backgroundColor: 'rgba(103, 119, 239, 0.2)',
                                             borderColor: 'rgb(103, 119, 239)',
@@ -141,7 +139,7 @@
                                     options: {
                                         elements: {
                                             line: {
-                                                borderWidth: 3
+                                                borderWidth: 2
                                             }
                                         }
                                     }

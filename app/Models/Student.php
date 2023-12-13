@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Skill;
 use App\Models\BscsCareer;
 use App\Models\AcademicPerformance;
 use Illuminate\Database\Eloquent\Model;
@@ -52,6 +53,16 @@ class Student extends Model
             'interest_student',
             'student_id',
             'interest_id'
+        );
+    }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Skill::class,
+            'skill_student',
+            'student_id',
+            'skill_id'
         );
     }
 }

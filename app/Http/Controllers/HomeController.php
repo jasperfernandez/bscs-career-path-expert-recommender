@@ -51,7 +51,7 @@ class HomeController extends Controller
             $extraCurricularActivities = $request->input('extra-curricular-activities');
             $student->extraCurricularActivities()->sync($extraCurricularActivities);
 
-            // // attach the interests of student
+            // attach the interests of student
             $interests = $request->input('interests');
             $student->interests()->sync($interests);
             return redirect()
@@ -74,6 +74,8 @@ class HomeController extends Controller
         $interests = $request->input('interests');
         $newStudent->interests()->sync($interests);
 
+        // TODO: Implement the recommendation algorithm
+
         return redirect()
             ->route('home')
             ->with('success', 'Saved successfully.');
@@ -81,6 +83,6 @@ class HomeController extends Controller
 
     public function getRadarChartData()
     {
-        //
+        // TODO: Implement logic for Student Skills Points for Radar Chart
     }
 }
