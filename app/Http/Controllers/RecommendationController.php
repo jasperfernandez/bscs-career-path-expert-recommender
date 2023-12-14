@@ -20,47 +20,45 @@ class RecommendationController extends Controller
         $studentPreferredCareer = $student->bscsCareer->bscs_career_name;
 
         $bscsCareers = BscsCareer::all();
+
         $bestMatchScore = 0;
         $bestMatchedCareer = null;
 
+        // Compare student interests and extra curricular activities with each career
         foreach ($bscsCareers as $career) {
+            // Initialize the score
             $careerScore = 0;
-
-            // Check for matching interests
+            // Compare interests
             foreach ($career->interests as $interest) {
                 if ($student->interests->contains('interest_name', $interest->interest_name)) {
                     $careerScore++;
                 }
             }
-
-            // Check for matching extracurricular activities
+            // Compare extra curricular activities
             foreach ($career->extraCurricularActivities as $activity) {
                 if ($student->extraCurricularActivities->contains('extra_curricular_activity_name', $activity->extra_curricular_activity_name)) {
                     $careerScore++;
                 }
             }
-
-            // Increment the score in the pivot table
+            // Update the bscs_career_student pivot table with the score
             if ($careerScore > 0) {
                 $career->studentWithBscsScores()->syncWithoutDetaching([$student->id => ['score' => $careerScore]]);
             }
-
             // Update the best match if the current career has a higher score
             if ($careerScore > $bestMatchScore) {
                 $bestMatchScore = $careerScore;
                 $bestMatchedCareer = $career;
             }
         }
-
         // Check academic performance
         if (!in_array($studentAcademicPerformance, ['Outstanding', 'Excellent', 'Very Good'])) {
-            // Find the career with difficulty 'medium' or 'easy' that has the highest score
+            // Find the career with difficulty 'medium' or 'easy'
             $studentCareerWithScores = BscsCareer::whereHas('studentWithBscsScores', function ($query) use ($studentId) {
                 $query->where('student_id', $studentId)
                     ->whereNotNull('score');
             })
                 ->whereIn('difficulty', ['medium', 'easy'])
-                ->with('studentWithBscsScores') // Eager load the relationship
+                ->with('studentWithBscsScores')
                 ->get();
 
             $sortedCareers = $studentCareerWithScores->sortByDesc('studentWithBscsScores.score');
@@ -73,8 +71,8 @@ class RecommendationController extends Controller
             }
         }
 
-        $skillNames = Skill::all()->pluck('skill_name')->toArray();
         $activitySkills = ExtraCurricularActivity::whereHas('skills')->get();
+
         $programmingAndDevelopmentActivities = $activitySkills->filter(function ($activity) {
             return $activity->skills->contains('skill_name', 'Programming and Development');
         });
@@ -97,33 +95,36 @@ class RecommendationController extends Controller
         $designAndUserExperienceCount = 0;
         $devOpsandAutomationCount = 0;
 
+        // Count the number of activities for each skill
         foreach ($studentExtraCurricularActivities as $activity) {
             if ($programmingAndDevelopmentActivities->contains('extra_curricular_activity_name', $activity)) {
                 $programmingAndDevelopmentCount++;
             }
-
             if ($dataScienceAndAnalyticsActivities->contains('extra_curricular_activity_name', $activity)) {
                 $dataScienceAndAnalyticsCount++;
             }
-
             if ($networkAndCybersecurityActivities->contains('extra_curricular_activity_name', $activity)) {
                 $networkAndCybersecurityCount++;
             }
-
             if ($designAndUserExperienceActivities->contains('extra_curricular_activity_name', $activity)) {
                 $designAndUserExperienceCount++;
             }
-
             if ($devOpsandAutomationActivities->contains('extra_curricular_activity_name', $activity)) {
                 $devOpsandAutomationCount++;
             }
         }
 
-        $programmingAndDevelopmentPoints = round($programmingAndDevelopmentCount * 3.33);
-        $dataScienceAndAnalyticsPoints = round($dataScienceAndAnalyticsCount * 1.25);
-        $networkAndCybersecurityPoints = round($networkAndCybersecurityCount * 1.42);
-        $designAndUserExperiencePoints = round($designAndUserExperienceCount * 2);
-        $devOpsandAutomationPoints = round($devOpsandAutomationCount * 3.33);
+        $pointsPerProgrammingAndDevelopmentActivity = 10 / $programmingAndDevelopmentActivities->count();
+        $pointsPerDataScienceAndAnalyticsActivity = 10 / $dataScienceAndAnalyticsActivities->count();
+        $pointsPerNetworkAndCybersecurityActivity = 10 / $networkAndCybersecurityActivities->count();
+        $pointsPerDesignAndUserExperienceActivity = 10 / $designAndUserExperienceActivities->count();
+        $pointsPerDevOpsandAutomationActivity = 10 / $devOpsandAutomationActivities->count();
+
+        $programmingAndDevelopmentPoints = round($programmingAndDevelopmentCount * $pointsPerProgrammingAndDevelopmentActivity);
+        $dataScienceAndAnalyticsPoints = round($dataScienceAndAnalyticsCount * $pointsPerDataScienceAndAnalyticsActivity);
+        $networkAndCybersecurityPoints = round($networkAndCybersecurityCount * $pointsPerNetworkAndCybersecurityActivity);
+        $designAndUserExperiencePoints = round($designAndUserExperienceCount * $pointsPerDesignAndUserExperienceActivity);
+        $devOpsandAutomationPoints = round($devOpsandAutomationCount * $pointsPerDevOpsandAutomationActivity);
 
         $skillPointsData = [
             $programmingAndDevelopmentPoints,
@@ -133,10 +134,20 @@ class RecommendationController extends Controller
             $devOpsandAutomationPoints,
         ];
 
+        $datasetLabel1 = 'Extra Curricular Activities of ' . $studentName;
+        $datasetLabel2 = 'Interest of ' . $studentName;
+        $skillNames = Skill::all()->pluck('skill_name')->toArray();
+
+        // dd($skillNames, $studentExtraCurricularActivities, $skillPointsData, $programmingAndDevelopmentActivities);
+
         return view('recommendation', compact(
             'studentName',
+            'datasetLabel1',
+            'datasetLabel2',
             'studentAcademicPerformance',
             'studentPreferredCareer',
+            'studentExtraCurricularActivities',
+            'studentInterests',
             'bestMatchedCareer',
             'skillNames',
             'skillPointsData'

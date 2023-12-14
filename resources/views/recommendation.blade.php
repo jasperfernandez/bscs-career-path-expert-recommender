@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="/img/jflogo.png">
-    <title>Home</title>
+    <title>Recommendation Results</title>
     {{--  Bootstrap --}}
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     {{-- FontAwesome --}}
@@ -20,30 +20,48 @@
 
 <body>
     <div class="container-fluid">
-        <div class="h1 text-center pt-4"><b>RESULTS</b> </div>
+        <div class="h1 text-center pt-4"><b>RECOMMENDATION RESULTS</b> </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p>Student Name: <span><b>{{ $studentName }}</b></span></p>
-                        <p>Academic Performance: <span><b>{{ $studentAcademicPerformance }}</b></span></p>
-                        <p>Preferred Career: <span><b>{{ $studentPreferredCareer }}</b></span></p>
-                        <p>Recommended Career: <span><b>{{ $bestMatchedCareer->bscs_career_name }}</b></span></p>
+                        <div class="row">
+                            <div class="col-6">
+                                <p>Student Name: <span><b>{{ $studentName }}</b></span></p>
+                                <p>Academic Performance: <span><b>{{ $studentAcademicPerformance }}</b></span></p>
+                                <p>Preferred Career: <span><b>{{ $studentPreferredCareer }}</b></span></p>
+                                <p>Recommended Career: <span><b>{{ $bestMatchedCareer->bscs_career_name }}</b></span>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p>Student Extra Curricular Activities:
+                                    @foreach ($studentExtraCurricularActivities as $activity)
+                                        <span><b>{{ $activity }}</b></span>,
+                                    @endforeach
+                                </p>
+                                <p>Student Interests:
+                                    @foreach ($studentInterests as $interest)
+                                        <span><b>{{ $interest }}</b></span>,
+                                    @endforeach
+                                </p>
+                            </div>
+                        </div>
 
                         <!-- Radar Chart -->
                         <canvas id="radarChart" style="max-height: 400px;"></canvas>
                         <script>
                             document.addEventListener("DOMContentLoaded", () => {
-                                let dataLabels = @json($skillNames);
-                                let datasetsLabel = @json($studentName);
+                                let fordatasetLabel1 = @json($datasetLabel1);
+                                let fordatasetLabel2 = @json($datasetLabel2);
+                                let datasetsLabel = @json($skillNames);
                                 let data = @json($skillPointsData);
 
                                 new Chart(document.querySelector('#radarChart'), {
                                     type: 'radar',
                                     data: {
-                                        labels: dataLabels,
+                                        labels: datasetsLabel,
                                         datasets: [{
-                                            label: datasetsLabel,
+                                            label: fordatasetLabel1,
                                             data: data,
                                             fill: true,
                                             backgroundColor: 'rgba(103, 119, 239, 0.2)',
@@ -52,9 +70,28 @@
                                             pointBorderColor: '#fff',
                                             pointHoverBackgroundColor: '#fff',
                                             pointHoverBorderColor: 'rgb(103, 119, 239)'
+                                        }, {
+                                            label: fordatasetLabel2,
+                                            data: data,
+                                            fill: true,
+                                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                            borderColor: 'rgb(255, 99, 132)',
+                                            pointBackgroundColor: 'rgb(255, 99, 132)',
+                                            pointBorderColor: '#fff',
+                                            pointHoverBackgroundColor: '#fff',
+                                            pointHoverBorderColor: 'rgb(255, 99, 132)'
                                         }]
                                     },
                                     options: {
+                                        scales: {
+                                            r: {
+                                                angleLines: {
+                                                    display: false
+                                                },
+                                                suggestedMin: 0,
+                                                suggestedMax: 10,
+                                            }
+                                        },
                                         elements: {
                                             line: {
                                                 borderWidth: 2

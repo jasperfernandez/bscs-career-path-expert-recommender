@@ -20,7 +20,7 @@
 
 <body>
     <div class="container-fluid">
-        <div class="h1 text-center pt-4"><b>BSCS CAREER PATH EXPERT RECOMMENDER SYSTEM</b> </div>
+        <div class="h1 text-center pt-4 mb-4"><b>BSCS CAREER PATH EXPERT RECOMMENDER SYSTEM</b> </div>
         <div class="row">
             <div class="col-md-8 mx-auto d-flex flex-column">
                 <div class="card mb-4">
