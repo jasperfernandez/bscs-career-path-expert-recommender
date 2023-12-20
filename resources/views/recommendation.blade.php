@@ -29,8 +29,11 @@
                             <div class="col-6">
                                 <p>Student Name: <span><b>{{ $studentName }}</b></span></p>
                                 <p>Academic Performance: <span><b>{{ $studentAcademicPerformance }}</b></span></p>
-                                <p>Preferred Career: <span><b>{{ $studentPreferredCareer }}</b></span></p>
-                                <p>Recommended Career: <span><b>{{ $bestMatchedCareer->bscs_career_name }}</b></span>
+                                <p>Student Preferred Career: <span><b>{{ $studentPreferredCareer }}</b></span></p>
+                                <p>Recommended Career:
+                                    @foreach ($careersWithHighestScore as $recommendedCareer)
+                                        <span><b>{{ $recommendedCareer->bscs_career_name }}</b></span>,
+                                    @endforeach
                                 </p>
                             </div>
                             <div class="col-6">
@@ -54,7 +57,8 @@
                                 let fordatasetLabel1 = @json($datasetLabel1);
                                 let fordatasetLabel2 = @json($datasetLabel2);
                                 let datasetsLabel = @json($skillNames);
-                                let data = @json($skillPointsData);
+                                let data = @json($skillPointsData1);
+                                let data2 = @json($skillPointsData2);
 
                                 new Chart(document.querySelector('#radarChart'), {
                                     type: 'radar',
@@ -72,7 +76,7 @@
                                             pointHoverBorderColor: 'rgb(103, 119, 239)'
                                         }, {
                                             label: fordatasetLabel2,
-                                            data: data,
+                                            data: data2,
                                             fill: true,
                                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                             borderColor: 'rgb(255, 99, 132)',

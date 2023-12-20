@@ -44,17 +44,11 @@ class HomeController extends Controller
 
         // find if student already exists
         $student = Student::where('name', $studentName)->first();
-        // student already exists just update the student record
-        if ($student) {
-            // attach the extra curricular activities student
-            $extraCurricularActivities = $request->input('extra-curricular-activities');
-            $student->extraCurricularActivities()->sync($extraCurricularActivities);
-            // attach the interests of student
-            $interests = $request->input('interests');
-            $student->interests()->sync($interests);
-
-            $studentId = $student->id;
-            return redirect()->route('recommendation', ['studentId' => $studentId]);
+        // student already exists return error
+        if ($student) {;
+            return redirect()->route('home')->withErrors([
+                'error' => 'Student already exists',
+            ]);
         }
 
         // create new student record
@@ -66,6 +60,7 @@ class HomeController extends Controller
         // attach the extra curricular activities student
         $extraCurricularActivities = $request->input('extra-curricular-activities');
         $newStudent->extraCurricularActivities()->sync($extraCurricularActivities);
+
         // attach the interests of student
         $interests = $request->input('interests');
         $newStudent->interests()->sync($interests);

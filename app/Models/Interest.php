@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Skill;
 use App\Models\BscsCareer;
 use App\Models\ExtraCurricularActivity;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +34,16 @@ class Interest extends Model
             'bscs_career_interest',
             'interest_id',
             'bscs_career_id',
+        );
+    }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Skill::class,
+            'interest_skill',
+            'interest_id',
+            'skill_id',
         );
     }
 }

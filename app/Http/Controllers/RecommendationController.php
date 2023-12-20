@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
-use App\Models\BscsCareer;
-use App\Models\ExtraCurricularActivity;
 use App\Models\Skill;
+use App\Models\Student;
+use App\Models\Interest;
+use App\Models\BscsCareer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\ExtraCurricularActivity;
 
 class RecommendationController extends Controller
 {
@@ -20,9 +22,6 @@ class RecommendationController extends Controller
         $studentPreferredCareer = $student->bscsCareer->bscs_career_name;
 
         $bscsCareers = BscsCareer::all();
-
-        $bestMatchScore = 0;
-        $bestMatchedCareer = null;
 
         // Compare student interests and extra curricular activities with each career
         foreach ($bscsCareers as $career) {
@@ -44,31 +43,61 @@ class RecommendationController extends Controller
             if ($careerScore > 0) {
                 $career->studentWithBscsScores()->syncWithoutDetaching([$student->id => ['score' => $careerScore]]);
             }
-            // Update the best match if the current career has a higher score
-            if ($careerScore > $bestMatchScore) {
-                $bestMatchScore = $careerScore;
-                $bestMatchedCareer = $career;
-            }
         }
+
         // Check academic performance
         if (!in_array($studentAcademicPerformance, ['Outstanding', 'Excellent', 'Very Good'])) {
-            // Find the career with difficulty 'medium' or 'easy'
-            $studentCareerWithScores = BscsCareer::whereHas('studentWithBscsScores', function ($query) use ($studentId) {
-                $query->where('student_id', $studentId)
-                    ->whereNotNull('score');
-            })
+            // Find the careers with difficulty 'medium' or 'easy' for a specific student
+            $matchedCareers = DB::table('bscs_careers')
                 ->whereIn('difficulty', ['medium', 'easy'])
-                ->with('studentWithBscsScores')
+                ->whereExists(function ($query) use ($studentId) {
+                    $query->select(DB::raw(1))
+                        ->from('students')
+                        ->join('bscs_career_student', 'students.id', '=', 'bscs_career_student.student_id')
+                        ->whereColumn('bscs_careers.id', 'bscs_career_student.bscs_career_id')
+                        ->where('student_id', $studentId)
+                        ->whereNotNull('score');
+                })
+                ->leftJoin('bscs_career_student', function ($join) use ($studentId) {
+                    $join->on('bscs_careers.id', '=', 'bscs_career_student.bscs_career_id')
+                        ->where('bscs_career_student.student_id', $studentId);
+                })
+                ->select('bscs_careers.*', 'bscs_career_student.score')
+                ->orderByDesc('bscs_career_student.score') // Order by score in descending order
                 ->get();
 
-            $sortedCareers = $studentCareerWithScores->sortByDesc('studentWithBscsScores.score');
-            $firstCareer = $sortedCareers->first();
+            // Get the highest score
+            $highestScore = $matchedCareers->first()->score;
 
-            if ($firstCareer) {
-                $bestMatchedCareer = $firstCareer;
-            } else {
-                $bestMatchedCareer = null;
-            }
+            // Filter careers with the highest score
+            $careersWithHighestScore = $matchedCareers->filter(function ($career) use ($highestScore) {
+                return $career->score == $highestScore;
+            });
+        } else {
+            $matchedCareers = DB::table('bscs_careers')
+                ->whereExists(function ($query) use ($studentId) {
+                    $query->select(DB::raw(1))
+                        ->from('students')
+                        ->join('bscs_career_student', 'students.id', '=', 'bscs_career_student.student_id')
+                        ->whereColumn('bscs_careers.id', 'bscs_career_student.bscs_career_id')
+                        ->where('student_id', $studentId)
+                        ->whereNotNull('score');
+                })
+                ->leftJoin('bscs_career_student', function ($join) use ($studentId) {
+                    $join->on('bscs_careers.id', '=', 'bscs_career_student.bscs_career_id')
+                        ->where('bscs_career_student.student_id', $studentId);
+                })
+                ->select('bscs_careers.*', 'bscs_career_student.score')
+                ->orderByDesc('bscs_career_student.score') // Order by score in descending order
+                ->get();
+
+            // Get the highest score
+            $highestScore = $matchedCareers->first()->score;
+
+            // Filter careers with the highest score
+            $careersWithHighestScore = $matchedCareers->filter(function ($career) use ($highestScore) {
+                return $career->score == $highestScore;
+            });
         }
 
         $activitySkills = ExtraCurricularActivity::whereHas('skills')->get();
@@ -126,7 +155,7 @@ class RecommendationController extends Controller
         $designAndUserExperiencePoints = round($designAndUserExperienceCount * $pointsPerDesignAndUserExperienceActivity);
         $devOpsandAutomationPoints = round($devOpsandAutomationCount * $pointsPerDevOpsandAutomationActivity);
 
-        $skillPointsData = [
+        $skillPointsData1 = [
             $programmingAndDevelopmentPoints,
             $dataScienceAndAnalyticsPoints,
             $networkAndCybersecurityPoints,
@@ -134,11 +163,75 @@ class RecommendationController extends Controller
             $devOpsandAutomationPoints,
         ];
 
+        // Interest Skill Points
+        $interestSkills = Interest::whereHas('skills')->get();
+
+        $programmingAndDevelopmentInterests = $interestSkills->filter(function ($activity) {
+            return $activity->skills->contains('skill_name', 'Programming and Development');
+        });
+        $dataScienceAndAnalyticsInterests = $interestSkills->filter(function ($activity) {
+            return $activity->skills->contains('skill_name', 'Data Science and Analytics');
+        });
+        $networkAndCybersecurityInterests = $interestSkills->filter(function ($activity) {
+            return $activity->skills->contains('skill_name', 'Network and Cybersecurity');
+        });
+        $designAndUserExperienceInterests = $interestSkills->filter(function ($activity) {
+            return $activity->skills->contains('skill_name', 'Design and User Experience');
+        });
+        $devOpsandAutomationInterests = $activitySkills->filter(function ($activity) {
+            return $activity->skills->contains('skill_name', 'DevOps and Automation');
+        });
+
+        $programmingAndDevelopmentInterestCount = 0;
+        $dataScienceAndAnalyticsInterestCount = 0;
+        $networkAndCybersecurityInterestCount = 0;
+        $designAndUserExperienceInterestCount = 0;
+        $devOpsandAutomationInterestCount = 0;
+
+        // Count the number of interests for each skill
+        foreach ($studentInterests as $interest) {
+            if ($programmingAndDevelopmentInterests->contains('interest_name', $interest)) {
+                $programmingAndDevelopmentInterestCount++;
+            }
+            if ($dataScienceAndAnalyticsInterests->contains('interest_name', $interest)) {
+                $dataScienceAndAnalyticsInterestCount++;
+            }
+            if ($networkAndCybersecurityInterests->contains('interest_name', $interest)) {
+                $networkAndCybersecurityInterestCount++;
+            }
+            if ($designAndUserExperienceInterests->contains('interest_name', $interest)) {
+                $designAndUserExperienceInterestCount++;
+            }
+            if ($devOpsandAutomationInterests->contains('interest_name', $interest)) {
+                $devOpsandAutomationInterestCount++;
+            }
+        }
+
+        $pointsPerProgrammingAndDevelopmentInterest = 10 / $programmingAndDevelopmentInterests->count();
+        $pointsPerDataScienceAndAnalyticsInterest = 10 / $dataScienceAndAnalyticsInterests->count();
+        $pointsPerNetworkAndCybersecurityInterest = 10 / $networkAndCybersecurityInterests->count();
+        $pointsPerDesignAndUserExperienceInterest = 10 / $designAndUserExperienceInterests->count();
+        $pointsPerDevOpsandAutomationInterest = 10 / $devOpsandAutomationInterests->count();
+
+        $programmingAndDevelopmentInterestPoints = round($programmingAndDevelopmentInterestCount * $pointsPerProgrammingAndDevelopmentInterest);
+        $dataScienceAndAnalyticsInterestPoints = round($dataScienceAndAnalyticsInterestCount * $pointsPerDataScienceAndAnalyticsInterest);
+        $networkAndCybersecurityInterestPoints = round($networkAndCybersecurityInterestCount * $pointsPerNetworkAndCybersecurityInterest);
+        $designAndUserExperienceInterestPoints = round($designAndUserExperienceInterestCount * $pointsPerDesignAndUserExperienceInterest);
+        $devOpsandAutomationInterestPoints = round($devOpsandAutomationInterestCount * $pointsPerDevOpsandAutomationInterest);
+
+        $skillPointsData2 = [
+            $programmingAndDevelopmentInterestPoints,
+            $dataScienceAndAnalyticsInterestPoints,
+            $networkAndCybersecurityInterestPoints,
+            $designAndUserExperienceInterestPoints,
+            $devOpsandAutomationInterestPoints,
+        ];
+
+
+
         $datasetLabel1 = 'Extra Curricular Activities of ' . $studentName;
         $datasetLabel2 = 'Interest of ' . $studentName;
         $skillNames = Skill::all()->pluck('skill_name')->toArray();
-
-        // dd($skillNames, $studentExtraCurricularActivities, $skillPointsData, $programmingAndDevelopmentActivities);
 
         return view('recommendation', compact(
             'studentName',
@@ -148,9 +241,10 @@ class RecommendationController extends Controller
             'studentPreferredCareer',
             'studentExtraCurricularActivities',
             'studentInterests',
-            'bestMatchedCareer',
+            'careersWithHighestScore',
             'skillNames',
-            'skillPointsData'
+            'skillPointsData1',
+            'skillPointsData2',
         ));
     }
 }

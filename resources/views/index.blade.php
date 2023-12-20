@@ -25,16 +25,16 @@
             <div class="col-md-8 mx-auto d-flex flex-column">
                 <div class="card mb-4">
                     <div class="card-body">
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if (session('error'))
+                        @if ($errors->any())
                             <div class="alert alert-danger">
-                                {{ session('error') }}
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
                         @endif
+
                         <form method="POST" action="{{ route('create-student') }}">
                             @csrf
                             @method('POST')

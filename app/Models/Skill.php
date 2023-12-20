@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Interest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Skill extends Model
@@ -29,6 +30,16 @@ class Skill extends Model
             'extra_curricular_activity_skill',
             'skill_id',
             'extra_curricular_activity_id'
+        );
+    }
+
+    public function interests(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Interest::class,
+            'interest_skill',
+            'skill_id',
+            'interest_id'
         );
     }
 }
