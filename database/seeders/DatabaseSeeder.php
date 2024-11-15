@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\InterestsTableSeeder;
 use Database\Seeders\BscsCareersTableSeeder;
+use Database\Seeders\AcademicPerformancesTableSeeder;
 use Database\Seeders\ExtracurricularActivitiesTableSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
             BscsCareersTableSeeder::class,
             ExtracurricularActivitiesTableSeeder::class,
             InterestsTableSeeder::class,
-            // BscsCareerExtracurricularActivityInterestTableSeeder::class,
+            AcademicPerformancesTableSeeder::class,
+            BscsCareerExtracurricularActivityInterestTableSeeder::class,
         ]);
     }
 }

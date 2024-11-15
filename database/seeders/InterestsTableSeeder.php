@@ -13,34 +13,41 @@ class InterestsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Interest::create(['interest_name' => 'Coding']);
-        Interest::create(['interest_name' => 'Problem-solving']);
-        Interest::create(['interest_name' => 'Algorithms']);
-        Interest::create(['interest_name' => 'Data Analysis']);
-        Interest::create(['interest_name' => 'Statistics']);
-        Interest::create(['interest_name' => 'Machine Learning']);
-        Interest::create(['interest_name' => 'Networking']);
-        Interest::create(['interest_name' => 'Security']);
-        Interest::create(['interest_name' => 'Troubleshooting']);
-        Interest::create(['interest_name' => 'Front-end Development']);
-        Interest::create(['interest_name' => 'Back-end Development']);
-        Interest::create(['interest_name' => 'UX/UI Design']);
-        Interest::create(['interest_name' => 'Database Design']);
-        Interest::create(['interest_name' => 'SQL']);
-        Interest::create(['interest_name' => 'Data Management']);
-        Interest::create(['interest_name' => 'Cybersecurity']);
-        Interest::create(['interest_name' => 'Ethical Hacking']);
-        Interest::create(['interest_name' => 'Risk Analysis']);
-        Interest::create(['interest_name' => 'Mobile App Development']);
-        Interest::create(['interest_name' => 'User Experience (UX)']);
-        Interest::create(['interest_name' => 'Automation']);
-        Interest::create(['interest_name' => 'Continous Integration']);
-        Interest::create(['interest_name' => 'Deployment']);
-        Interest::create(['interest_name' => 'Game Design']);
-        Interest::create(['interest_name' => '3D Modeling']);
-        Interest::create(['interest_name' => 'Virtual Reality']);
-        Interest::create(['interest_name' => 'Deep Learning']);
-        Interest::create(['interest_name' => 'Artificial Intelligence']);
-        Interest::create(['interest_name' => 'AI Research']);
+        $interests = [
+            ['interest_name' => 'Coding', 'skill_id' => 1],
+            ['interest_name' => 'Problem-solving', 'skill_id' => 1],
+            ['interest_name' => 'Algorithms', 'skill_id' => 1],
+            ['interest_name' => 'Data Analysis', 'skill_id' => 2],
+            ['interest_name' => 'Statistics', 'skill_id' => 2],
+            ['interest_name' => 'Machine Learning', 'skill_id' => 2],
+            ['interest_name' => 'Networking', 'skill_id' => 3],
+            ['interest_name' => 'Security', 'skill_id' => 3],
+            ['interest_name' => 'Troubleshooting', 'skill_id' => 3],
+            ['interest_name' => 'Front-end Development', 'skill_id' => 1],
+            ['interest_name' => 'Back-end Development', 'skill_id' => 1],
+            ['interest_name' => 'UX/UI Design', 'skill_id' => 4],
+            ['interest_name' => 'Database Design', 'skill_id' => 2],
+            ['interest_name' => 'SQL', 'skill_id' => 2],
+            ['interest_name' => 'Data Management', 'skill_id' => 2],
+            ['interest_name' => 'Cybersecurity', 'skill_id' => 3],
+            ['interest_name' => 'Ethical Hacking', 'skill_id' => 3],
+            ['interest_name' => 'Risk Analysis', 'skill_id' => 3],
+            ['interest_name' => 'Mobile App Development', 'skill_id' => 1],
+            ['interest_name' => 'User Experience (UX)', 'skill_id' => 4],
+            ['interest_name' => 'Automation', 'skill_id' => 5],
+            ['interest_name' => 'Continous Integration', 'skill_id' => 5],
+            ['interest_name' => 'Deployment', 'skill_id' => 5],
+            ['interest_name' => 'Game Design', 'skill_id' => 1],
+            ['interest_name' => '3D Modeling', 'skill_id' => 4],
+            ['interest_name' => 'Virtual Reality', 'skill_id' => 4],
+            ['interest_name' => 'Deep Learning', 'skill_id' => 2],
+            ['interest_name' => 'Artificial Intelligence', 'skill_id' => 2],
+            ['interest_name' => 'AI Research', 'skill_id' => 2],
+        ];
+
+        foreach ($interests as $interestData) {
+            $interest = Interest::create(['interest_name' => $interestData['interest_name']]);
+            $interest->skills()->attach($interestData['skill_id']);
+        }
     }
 }
